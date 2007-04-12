@@ -1,0 +1,204 @@
+%define name	speech_tools
+%define version	1.2.95
+%define release	%mkrel 2
+
+%define major 1
+%define libname %mklibname %name %major
+%define libnamedevel %mklibname %name %major -d
+
+%global shared 0
+%if !%shared
+%define libnamedevel %libname-static-devel
+%endif
+# some programs may depend on data in */lib only
+%define speechtoolsdir %{_prefix}/lib/%{name}
+
+Summary: 	A free speech synthesizer 
+Name:  		%{name}
+Version: 	%{version}
+Release: 	%{release}
+License: 	BSD
+Group: 		Sound
+URL: 		http://www.cstr.ed.ac.uk/projects/festival/
+Source0:	speech_tools-%{version}-beta.tar.bz2
+Patch0:		%{name}-termcap.patch
+Patch1:		%{name}-shared.patch
+Patch2:		speech_tools-c++fixes.patch
+Patch3:		speech_tools-64bit-fixes.patch
+# (fc) 1.2.95-2mdv fix build with gcc 4.1.2 (Mdv bug #27640)
+Patch4:		speech_tools-gcc412fixes.patch
+BuildRequires:	libtermcap-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
+
+%description
+Festival is a general multi-lingual speech synthesis system developed
+at CSTR. It offers a full text to speech system with various APIs, as
+well as an environment for development and research of speech synthesis
+techniques. It is written in C++ with a Scheme-based command interpreter
+for general control.
+
+%if %shared
+%package -n	%{libname}
+Summary:  	Static libraries and headers for festival text to speech
+Group: 		System/Libraries
+Requires: 	%{name} = %{version}-%{release}
+
+%description -n	%{libname}
+Festival is a general multi-lingual speech synthesis system developed
+at CSTR. It offers a full text to speech system with various APIs, as
+well as an environment for development and research of speech synthesis
+techniques. It is written in C++ with a Scheme-based command interpreter
+for general control.
+
+This package contains the libraries and includes files necessary for
+applications that use festival.
+%endif
+
+%package -n	%{libnamedevel}
+Summary:  	Static libraries and headers for festival text to speech
+Group: 		Development/C++
+Requires: 	%{name} = %{version}-%{release}
+Provides:	%{name}-devel
+
+%description -n	%{libnamedevel}
+Festival is a general multi-lingual speech synthesis system developed
+at CSTR. It offers a full text to speech system with various APIs, as
+well as an environment for development and research of speech synthesis
+techniques. It is written in C++ with a Scheme-based command interpreter
+for general control.
+
+This package contains the libraries and includes files necessary to develop
+applications using festival.
+ 
+%prep
+
+%setup -q -n %{name}
+%if %shared
+%patch1 -p1
+%endif
+%patch2 -p1 -b .c++fixes
+%patch3 -p1 -b .64bit-fixes
+%patch4 -p1 -b .gcc412fixes
+
+%build
+%configure
+# XXX parallel build is pure luck, but sounds reasonable enough with 4 jobs at most
+[ -z "$RPM_BUILD_NCPUS" ] && RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
+[ "$RPM_BUILD_NCPUS" -gt 4 ] && RPM_BUILD_NCPUS=4
+#make -j$RPM_BUILD_NCPUS
+# (nonotor) Remove parallel build because of error building 64bits with ver. 1.2.95
+make
+# all tests must pass
+make test
+
+%install
+rm -rf %{buildroot}
+
+install -d %{buildroot}/{%{_bindir},%{_libdir},%{_includedir}/EST,%{_datadir}/%{name}/example_data,%{speechtoolsdir}/{scripts,siod,stats/wagon,grammar/{scfg,wfst}}}
+
+rm -f %{buildroot}%{_bindir}/Makefile
+
+install -d %{buildroot}%{_mandir}/man1
+
+# includes
+cp -a include/* %{buildroot}%{_includedir}/EST
+find %{buildroot}%{_includedir}/EST -name Makefile -exec rm \{\} \;
+for file in `find %{buildroot}%{_includedir}/EST -type f`
+do
+        sed 's/\"\(.*h\)\"/\<EST\/\1\>/g' $file > $file.tmp
+	mv $file.tmp $file
+done
+sed 's/\<EST\//&rxp\//g' %{buildroot}%{_includedir}/EST/rxp/rxp.h > bzzz
+mv bzzz %{buildroot}%{_includedir}/EST/rxp/rxp.h
+for i in %{buildroot}%{_includedir}/EST/rxp/*
+do
+	ln -s %{_includedir}/EST/rxp/`basename $i` %{buildroot}%{_includedir}/EST/`basename $i`
+done
+ln -s %{_includedir}/EST %{buildroot}%{speechtoolsdir}/include
+
+# libraries
+install lib/lib* %{buildroot}%{_libdir}
+%if %shared
+for i in %{buildroot}%{_libdir}/*.so
+do
+        rm $i
+	ln -s `basename $i*` $i
+done
+%endif
+		
+# binaries
+install `find bin -type f -perm +1` %{buildroot}%{_bindir}
+
+# scripts
+install scripts/{example_to_doc++.prl,make_wagon_desc.sh,resynth.sh,shared_script,shared_setup_prl,shared_setup_sh} \
+	%{buildroot}%{speechtoolsdir}/scripts
+
+# example data
+install lib/example_data/* %{buildroot}%{_datadir}/%{name}/example_data
+rm %{buildroot}%{_datadir}/%{name}/example_data/Makefile
+
+cp -a config %{buildroot}%{speechtoolsdir}
+cp -r testsuite %{buildroot}%{speechtoolsdir}
+rm %{buildroot}%{speechtoolsdir}/testsuite/*.o
+install siod/siod.mak %{buildroot}%{speechtoolsdir}/siod
+install lib/siod/*.scm %{buildroot}%{speechtoolsdir}/siod
+install stats/ols.mak %{buildroot}%{speechtoolsdir}/stats
+install stats/wagon/wagon.mak %{buildroot}%{speechtoolsdir}/stats/wagon
+install grammar/scfg/scfg.mak %{buildroot}%{speechtoolsdir}/grammar/scfg
+install grammar/wfst/wfst.mak %{buildroot}%{speechtoolsdir}/grammar/wfst
+
+# symlinks into buildtree evil
+for i in %{buildroot}%{_bindir}/*; do
+	if [ -h "$i" ]; then
+    		a=`readlink "$i"`
+		rm -f "$i"	
+		cp -a "$a" %{buildroot}%{_bindir}/
+	fi
+done
+
+# Remove some files we don't need
+rm -rf %{buildroot}%{_includedir}/speech_tools/win32
+rm -f  %{buildroot}%{_datadir}/festival/etc/unknown_RedHatLinux/
+
+find %{buildroot} -type f -size 0 -exec rm -f {} \;
+
+%if %shared
+%post -n %{libname} 
+/sbin/ldconfig
+
+%postun -n %{libname}
+/sbin/ldconfig
+%endif
+
+%clean
+rm -rf %{buildroot}
+
+%files
+%defattr(-,root,root)
+%doc INSTALL README
+%{_bindir}/*
+%{_datadir}/%{name}
+
+
+%if %shared
+%files -n %{libname}
+%defattr(-,root,root)
+%{_libdir}/*.so.*
+%endif
+
+%files -n %{libnamedevel}
+%defattr(-,root,root)
+%{_includedir}/EST
+%dir %{speechtoolsdir}
+%{speechtoolsdir}/*
+%if %shared
+%{_libdir}/*.so
+%else
+%{_libdir}/*.a
+%endif
+
+#%files -n %{libname}-static-devel
+#%defattr(-,root,root)
+#%_libdir/*.a
+
+
