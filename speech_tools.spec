@@ -1,14 +1,14 @@
 %define name	speech_tools
-%define version	1.2.95
-%define release	%mkrel 2
+%define version	1.2.96
+%define release	%mkrel 1
 
 %define major 1
 %define libname %mklibname %name %major
-%define libnamedevel %mklibname %name %major -d
+%define libnamedevel %mklibname %name -d
 
 %global shared 0
 %if !%shared
-%define libnamedevel %libname-static-devel
+%define libnamedevel %mklibname -d -s %name
 %endif
 # some programs may depend on data in */lib only
 %define speechtoolsdir %{_prefix}/lib/%{name}
@@ -76,9 +76,9 @@ applications using festival.
 %if %shared
 %patch1 -p1
 %endif
-%patch2 -p1 -b .c++fixes
-%patch3 -p1 -b .64bit-fixes
-%patch4 -p1 -b .gcc412fixes
+#%patch2 -p1 -b .c++fixes
+#%patch3 -p1 -b .64bit-fixes
+#%patch4 -p1 -b .gcc412fixes
 
 %build
 %configure
@@ -200,5 +200,3 @@ rm -rf %{buildroot}
 #%files -n %{libname}-static-devel
 #%defattr(-,root,root)
 #%_libdir/*.a
-
-
