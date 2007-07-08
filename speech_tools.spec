@@ -21,12 +21,7 @@ License: 	BSD
 Group: 		Sound
 URL: 		http://www.cstr.ed.ac.uk/projects/festival/
 Source0:	speech_tools-%{version}-beta.tar.bz2
-Patch0:		%{name}-termcap.patch
-Patch1:		%{name}-shared.patch
-Patch2:		speech_tools-c++fixes.patch
-Patch3:		speech_tools-64bit-fixes.patch
 # (fc) 1.2.95-2mdv fix build with gcc 4.1.2 (Mdv bug #27640)
-Patch4:		speech_tools-gcc412fixes.patch
 BuildRequires:	libtermcap-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
 
@@ -73,12 +68,6 @@ applications using festival.
 %prep
 
 %setup -q -n %{name}
-%if %shared
-%patch1 -p1
-%endif
-#%patch2 -p1 -b .c++fixes
-#%patch3 -p1 -b .64bit-fixes
-#%patch4 -p1 -b .gcc412fixes
 
 %build
 %configure
