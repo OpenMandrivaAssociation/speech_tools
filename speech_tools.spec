@@ -1,6 +1,6 @@
 %define name	speech_tools
 %define version	1.2.96
-%define release	%mkrel 1
+%define release	%mkrel 2
 
 %define major 1
 %define libname %mklibname %name %major
@@ -54,6 +54,11 @@ Summary:  	Static libraries and headers for festival text to speech
 Group: 		Development/C++
 Requires: 	%{name} = %{version}-%{release}
 Provides:	%{name}-devel
+%if %shared
+Obsoletes:	%mklibname -d %name %major
+%else
+Obsoletes:	%mklibname -d -s %name %major
+%endif
 
 %description -n	%{libnamedevel}
 Festival is a general multi-lingual speech synthesis system developed
