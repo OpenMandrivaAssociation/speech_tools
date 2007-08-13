@@ -79,7 +79,7 @@ applications using festival.
 %if shared
 export SHARED=1
 %endif
-%configure
+%configure2_5x
 make
 
 %check
