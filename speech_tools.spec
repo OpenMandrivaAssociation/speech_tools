@@ -1,12 +1,12 @@
 %define name	speech_tools
 %define version	1.2.96
-%define release	%mkrel 2
+%define release	%mkrel 3
 
 %define major 1
 %define libname %mklibname %name %major
 %define libnamedevel %mklibname %name -d
 
-%global shared 0
+%global shared 1
 %if !%shared
 %define libnamedevel %mklibname -d -s %name
 %endif
@@ -53,9 +53,10 @@ applications that use festival.
 Summary:  	Static libraries and headers for festival text to speech
 Group: 		Development/C++
 Requires: 	%{name} = %{version}-%{release}
-Provides:	%{name}-devel
+Provides:	%{name}-devel = %{version}-%{release}
 %if %shared
 Obsoletes:	%mklibname -d %name %major
+Obsoletes:	%mklibname -d -s %name
 %else
 Obsoletes:	%mklibname -d -s %name %major
 %endif
@@ -75,13 +76,13 @@ applications using festival.
 %patch1 -p1
 
 %build
+%if shared
+export SHARED=1
+%endif
 %configure
-# XXX parallel build is pure luck, but sounds reasonable enough with 4 jobs at most
-[ -z "$RPM_BUILD_NCPUS" ] && RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
-[ "$RPM_BUILD_NCPUS" -gt 4 ] && RPM_BUILD_NCPUS=4
-#make -j$RPM_BUILD_NCPUS
-# (nonotor) Remove parallel build because of error building 64bits with ver. 1.2.95
 make
+
+%check
 # all tests must pass
 make test
 
@@ -91,8 +92,6 @@ rm -rf %{buildroot}
 install -d %{buildroot}/{%{_bindir},%{_libdir},%{_includedir}/EST,%{_datadir}/%{name}/example_data,%{speechtoolsdir}/{scripts,siod,stats/wagon,grammar/{scfg,wfst}}}
 
 rm -f %{buildroot}%{_bindir}/Makefile
-
-install -d %{buildroot}%{_mandir}/man1
 
 # includes
 cp -a include/* %{buildroot}%{_includedir}/EST
@@ -173,11 +172,10 @@ rm -rf %{buildroot}
 %{_bindir}/*
 %{_datadir}/%{name}
 
-
 %if %shared
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{major}*
 %endif
 
 %files -n %{libnamedevel}
@@ -187,9 +185,8 @@ rm -rf %{buildroot}
 %{speechtoolsdir}/*
 %if %shared
 %{_libdir}/*.so
-%else
-%{_libdir}/*.a
 %endif
+%{_libdir}/*.a
 
 #%files -n %{libname}-static-devel
 #%defattr(-,root,root)
