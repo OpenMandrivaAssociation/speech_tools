@@ -22,6 +22,7 @@ Group: 		Sound
 URL: 		http://www.cstr.ed.ac.uk/projects/festival/
 Source0:	speech_tools-%{version}-beta.tar.bz2
 Patch1:		speech_tools-1.2.96-gcc41-amd64-int-pointer.patch
+Patch2:		speech_tools-1.2.96-remove-invalid-gcc-option.patch
 BuildRequires:	libtermcap-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
 
@@ -74,6 +75,7 @@ applications using festival.
 %prep
 %setup -q -n %{name}
 %patch1 -p1
+%patch2 -p0
 
 %build
 %if shared
