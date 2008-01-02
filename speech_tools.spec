@@ -24,6 +24,7 @@ Source0:	speech_tools-%{version}-beta.tar.bz2
 Patch1:		speech_tools-1.2.96-gcc41-amd64-int-pointer.patch
 Patch2:		speech_tools-1.2.96-remove-invalid-gcc-option.patch
 BuildRequires:	libtermcap-devel
+BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
 
 %description
 Festival is a general multi-lingual speech synthesis system developed
