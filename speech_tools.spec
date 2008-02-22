@@ -1,6 +1,6 @@
 %define name	speech_tools
 %define version	1.2.96
-%define release	%mkrel 3
+%define release	%mkrel 4
 
 %define major 1
 %define libname %mklibname %name %major
@@ -23,7 +23,15 @@ URL: 		http://www.cstr.ed.ac.uk/projects/festival/
 Source0:	speech_tools-%{version}-beta.tar.bz2
 Patch1:		speech_tools-1.2.96-gcc41-amd64-int-pointer.patch
 Patch2:		speech_tools-1.2.96-remove-invalid-gcc-option.patch
-BuildRequires:	libtermcap-devel
+# (fc) 1.2.96-4mdv cxx is not gcc (Fedora)
+Patch3:		speech_tools-1.2.96-ohjeezcxxisnotgcc.patch
+# (fc) 1.2.96-4mdv build esound module (Fedora)
+Patch4:		speech_tools-1.2.96-buildesdmodule.patch
+# (fc) 1.2.96-4mdv Fix a coding error (RH bug #162137) (Fedora)
+Patch5:		speech_tools-1.2.96-rateconvtrivialbug.patch
+# (fc) 1.2.96-4mdv Link libs with libm, libtermcap, and libesd (RH bug #198190) (Fedora)
+Patch6:		speech_tools-1.2.96-linklibswithotherlibs.patch
+BuildRequires:	ncurses-devel esound-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
 
 %description
@@ -54,6 +62,7 @@ applications that use festival.
 Summary:  	Static libraries and headers for festival text to speech
 Group: 		Development/C++
 Requires: 	%{name} = %{version}-%{release}
+Requires: 	%{libname} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 %if %shared
 Obsoletes:	%mklibname -d %name %major
@@ -74,15 +83,28 @@ applications using festival.
  
 %prep
 %setup -q -n %{name}
-%patch1 -p1
-%patch2 -p0
+%patch1 -p1 -b .gcc41-amd64-int-pointer
+%patch2 -p0 -b .remove-invalid-gcc-option
+%patch3 -p1 -b .cxxisnotgcc
+%patch4 -p1 -b .buildesdmodule
+%patch5 -p1 -b .rateconvtrivialbug
+%patch6 -p1 -b .linklibswithotherlibs
 
 %build
 %if shared
-export SHARED=1
+export SHARED=2
 %endif
 %configure2_5x
-make
+  # -fPIC 'cause we're building shared libraries and it doesn't hurt
+  # -fno-strict-aliasing because of a couple of warnings about code
+  #   problems; if $RPM_OPT_FLAGS contains -O2 or above, this puts
+  #   it back. Once that problem is gone upstream, remove this for
+  #   better optimization.
+
+make \
+    CFLAGS="$RPM_OPT_FLAGS -fPIC -fno-strict-aliasing" \
+    CXXFLAGS="$RPM_OPT_FLAGS  -fPIC -fno-strict-aliasing"
+
 
 %check
 # all tests must pass
