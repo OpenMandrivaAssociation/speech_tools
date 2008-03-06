@@ -1,6 +1,6 @@
 %define name	speech_tools
 %define version	1.2.96
-%define release	%mkrel 4
+%define release	%mkrel 5
 
 %define major 1
 %define libname %mklibname %name %major
@@ -31,6 +31,8 @@ Patch4:		speech_tools-1.2.96-buildesdmodule.patch
 Patch5:		speech_tools-1.2.96-rateconvtrivialbug.patch
 # (fc) 1.2.96-4mdv Link libs with libm, libtermcap, and libesd (RH bug #198190) (Fedora)
 Patch6:		speech_tools-1.2.96-linklibswithotherlibs.patch
+# (fc) 1.2.96-5mdv improve soname (Fedora)
+Patch7:		speech_tools-1.2.96-bettersoname.patch
 BuildRequires:	ncurses-devel esound-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
 
@@ -89,6 +91,7 @@ applications using festival.
 %patch4 -p1 -b .buildesdmodule
 %patch5 -p1 -b .rateconvtrivialbug
 %patch6 -p1 -b .linklibswithotherlibs
+%patch7 -p1 -b .bettersoname
 
 %build
 %if shared
