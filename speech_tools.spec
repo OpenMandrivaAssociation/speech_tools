@@ -183,8 +183,7 @@ rm -f  %{buildroot}%{_datadir}/festival/etc/unknown_RedHatLinux/
 find %{buildroot} -type f -size 0 -exec rm -f {} \;
 
 %if %shared
-%post -n %{libname} 
-/sbin/ldconfig
+%post -n %{libname}  -p /sbin/ldconfig
 
 %postun -n %{libname}
 /sbin/ldconfig
