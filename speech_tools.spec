@@ -183,10 +183,14 @@ rm -f  %{buildroot}%{_datadir}/festival/etc/unknown_RedHatLinux/
 find %{buildroot} -type f -size 0 -exec rm -f {} \;
 
 %if %shared
+%if %mdkversion < 200900
 %post -n %{libname}  -p /sbin/ldconfig
+%endif
 
 %postun -n %{libname}
+%if %mdkversion < 200900
 /sbin/ldconfig
+%endif
 %endif
 
 %clean
