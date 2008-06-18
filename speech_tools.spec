@@ -1,6 +1,6 @@
 %define name	speech_tools
 %define version	1.2.96
-%define release	%mkrel 5
+%define release	%mkrel 6
 
 %define major 1
 %define libname %mklibname %name %major
