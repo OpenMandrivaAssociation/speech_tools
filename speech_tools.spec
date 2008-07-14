@@ -1,7 +1,3 @@
-%define name	speech_tools
-%define version	1.2.96
-%define release	%mkrel 6
-
 %define major 1
 %define libname %mklibname %name %major
 %define libnamedevel %mklibname %name -d
@@ -14,9 +10,9 @@
 %define speechtoolsdir %{_prefix}/lib/%{name}
 
 Summary: 	A free speech synthesizer 
-Name:  		%{name}
-Version: 	%{version}
-Release: 	%{release}
+Name:  		speech_tools
+Version: 	1.2.96
+Release: 	%mkrel 7
 License: 	BSD
 Group: 		Sound
 URL: 		http://www.cstr.ed.ac.uk/projects/festival/
@@ -33,8 +29,9 @@ Patch5:		speech_tools-1.2.96-rateconvtrivialbug.patch
 Patch6:		speech_tools-1.2.96-linklibswithotherlibs.patch
 # (fc) 1.2.96-5mdv improve soname (Fedora)
 Patch7:		speech_tools-1.2.96-bettersoname.patch
+Patch8:		speech-tools-1.2.96_beta-gcc43-include.patch
 BuildRequires:	ncurses-devel esound-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root 
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Festival is a general multi-lingual speech synthesis system developed
@@ -92,6 +89,7 @@ applications using festival.
 %patch5 -p1 -b .rateconvtrivialbug
 %patch6 -p1 -b .linklibswithotherlibs
 %patch7 -p1 -b .bettersoname
+%patch8 -p1 -b .gcc43
 
 %build
 %if shared
