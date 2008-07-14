@@ -81,6 +81,7 @@ This package contains the libraries and includes files necessary to develop
 applications using festival.
  
 %prep
+
 %setup -q -n %{name}
 %patch1 -p1 -b .gcc41-amd64-int-pointer
 %patch2 -p0 -b .remove-invalid-gcc-option
