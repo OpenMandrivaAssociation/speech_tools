@@ -12,7 +12,7 @@
 Summary: 	A free speech synthesizer 
 Name:  		speech_tools
 Version: 	1.2.96
-Release: 	%mkrel 7
+Release: 	%mkrel 8
 License: 	BSD
 Group: 		Sound
 URL: 		http://www.cstr.ed.ac.uk/projects/festival/
