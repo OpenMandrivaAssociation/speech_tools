@@ -1,0 +1,30 @@
+--- config/compilers/gcc_defaults.mak.old	2007-08-13 18:47:59.000000000 +0800
++++ config/compilers/gcc_defaults.mak	2007-08-13 18:48:25.000000000 +0800
+@@ -76,12 +76,12 @@
+ PROFILE_gprof_CXXFLAGS  = -pg
+ PROFILE_gprof_LINKFLAGS = -pg
+ 
+-SHARED_CCFLAGS  = -fPIC -fno-shared-data
+-SHARED_CXXFLAGS  = -fPIC -fno-shared-data
+-SHARED_LINKFLAGS = -fno-shared-data
++SHARED_CCFLAGS  = -fPIC
++SHARED_CXXFLAGS  = -fPIC
++SHARED_LINKFLAGS = 
+ 
+ ifndef GCC_MAKE_SHARED_LIB
+-    MAKE_SHARED_LIB = $(CXX) -shared -fno-shared-data -o XXX
++    MAKE_SHARED_LIB = $(CXX) -shared -o XXX
+ else
+     MAKE_SHARED_LIB = $(GCC_MAKE_SHARED_LIB)
+ endif
+--- config/compilers/egcs.mak.old	2007-08-13 18:49:01.000000000 +0800
++++ config/compilers/egcs.mak	2007-08-13 18:49:13.000000000 +0800
+@@ -54,7 +54,7 @@
+ CXX=$(EGCS_CXX)
+ 
+ ifndef EGCS_MAKE_SHARED_LIB
+-    MAKE_SHARED_LIB = gcc -shared -fno-shared-data -o XXX -Xlinker -h -Xlinker XXX
++    MAKE_SHARED_LIB = gcc -shared -o XXX -Xlinker -h -Xlinker XXX
+ else
+     MAKE_SHARED_LIB = $(GCC_MAKE_SHARED_LIB)
+ endif
