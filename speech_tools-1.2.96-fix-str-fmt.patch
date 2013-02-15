@@ -1,0 +1,22 @@
+--- speech_tools/siod/siodeditline.c.str	2009-04-07 17:51:25.000000000 +0200
++++ speech_tools/siod/siodeditline.c	2009-04-07 17:51:39.000000000 +0200
+@@ -151,7 +151,7 @@
+     symbol = el_current_sym();
+     infostring = siod_manual_sym(symbol);
+     putc('\n',stderr);
+-    fprintf(stderr,infostring);
++    fprintf(stderr,"%s",infostring);
+     fflush(stderr);
+     putc('\n',stderr);
+     fflush(stderr);
+--- speech_tools/utils/cmd_line.cc.str	2009-04-07 18:01:59.000000000 +0200
++++ speech_tools/utils/cmd_line.cc	2009-04-07 18:02:10.000000000 +0200
+@@ -460,7 +460,7 @@
+     fprintf(stdout,"<cmdsynopsis><command>%s</command>", 
+ 	    (const char *)full.filename());
+ 
+-    fprintf(stdout, (const char *)ts.get_upto_eoln().string());
++    fprintf(stdout, "%s", (const char *)ts.get_upto_eoln().string());
+ 
+     while (!ts.eof())
+     {

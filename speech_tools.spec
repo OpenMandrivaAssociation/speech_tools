@@ -1,222 +1,154 @@
-%define major 1
-%define libname %mklibname %name %major
-%define libnamedevel %mklibname %name -d
+%define major 2.1.1
+%define libestbase %mklibname estbase %{major}
+%define libestools %mklibname estools %{major}
 
-%global shared 1
-%if !%shared
-%define libnamedevel %mklibname -d -s %name
-%endif
-# some programs may depend on data in */lib only
-%define speechtoolsdir %{_prefix}/lib/%{name}
+%define stringmajor 1.2
+%define libeststring %mklibname eststring %{stringmajor}
 
-Summary: 	A free speech synthesizer 
-Name:  		speech_tools
-Version: 	1.2.96
-Release: 	%mkrel 9
-License: 	BSD
-Group: 		Sound
-URL: 		http://www.cstr.ed.ac.uk/projects/festival/
-Source0:	speech_tools-%{version}-beta.tar.bz2
-Patch1:		speech_tools-1.2.96-gcc41-amd64-int-pointer.patch
-Patch2:		speech_tools-1.2.96-remove-invalid-gcc-option.patch
-# (fc) 1.2.96-4mdv cxx is not gcc (Fedora)
-Patch3:		speech_tools-1.2.96-ohjeezcxxisnotgcc.patch
-# (fc) 1.2.96-4mdv build esound module (Fedora)
-Patch4:		speech_tools-1.2.96-buildesdmodule.patch
+%define oldlibname %mklibname speech_tools 1
+%define devname %mklibname speech_tools -d
+
+Summary:	A free speech synthesizer 
+Name:		speech_tools
+Version:	2.1
+Release:	4
+License:	BSD
+Group:		Sound
+Url:		http://www.cstr.ed.ac.uk/projects/festival/
+Source0:	http://festvox.org/packed/festival/%{version}/%{name}-%{version}-release.tar.gz
+#Source3:	siteinit.scm
+#Source4:	sitevars.scm
+Patch3: festival.gcc47.patch
 # (fc) 1.2.96-4mdv Fix a coding error (RH bug #162137) (Fedora)
-Patch5:		speech_tools-1.2.96-rateconvtrivialbug.patch
+Patch5: festival-1.96-speechtools-rateconvtrivialbug.patch
 # (fc) 1.2.96-4mdv Link libs with libm, libtermcap, and libesd (RH bug #198190) (Fedora)
-Patch6:		speech_tools-1.2.96-linklibswithotherlibs.patch
+# (ahmad) 2.1-2.mga1 modify this patch so that we don't link against libesd,
+# as esound is being phased out of the distro
+Patch6:		festival-2.1-speechtools-linklibswithotherlibs.patch
+# (fc) 1.2.96-5mdv build speech_tools as shared libraries (Fedora)
+Patch8:		festival-1.96-speechtools-shared-build.patch
+# (fc) 1.96-5mdv  Build main library as shared, not just speech-tools (Fedora)
+Patch11:	festival-1.96-main-shared-build.patch
 # (fc) 1.2.96-5mdv improve soname (Fedora)
-Patch7:		speech_tools-1.2.96-bettersoname.patch
-Patch8:		speech-tools-1.2.96_beta-gcc43-include.patch
-BuildRequires:	ncurses-devel esound-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Patch12:	festival-2.1-bettersonamehack.patch
+Patch17:	speech_tools-1.2.96-fix-str-fmt.patch
+
+BuildRequires:	perl
+BuildRequires:	pkgconfig(ncurses)
 
 %description
-Festival is a general multi-lingual speech synthesis system developed
-at CSTR. It offers a full text to speech system with various APIs, as
-well as an environment for development and research of speech synthesis
-techniques. It is written in C++ with a Scheme-based command interpreter
-for general control.
+Miscellaneous utilities from the Edinburgh Speech Tools. Unless you have a
+specific need for one of these programs, you probably don't need to install
+this.
 
-%if %shared
-%package -n	%{libname}
-Summary:  	Static libraries and headers for festival text to speech
-Group: 		System/Libraries
-Requires: 	%{name} = %{version}-%{release}
+%package -n	%{libestbase}
+Summary:	Shared libraries for festival text to speech
+Group:		System/Libraries
+Obsoletes:	%{_lib}speech_tools2.1.1 < 2.1-4
 
-%description -n	%{libname}
-Festival is a general multi-lingual speech synthesis system developed
-at CSTR. It offers a full text to speech system with various APIs, as
-well as an environment for development and research of speech synthesis
-techniques. It is written in C++ with a Scheme-based command interpreter
-for general control.
-
+%description -n	%{libestbase}
 This package contains the libraries and includes files necessary for
-applications that use festival.
-%endif
+applications that use %{name}.
 
-%package -n	%{libnamedevel}
-Summary:  	Static libraries and headers for festival text to speech
-Group: 		Development/C++
-Requires: 	%{name} = %{version}-%{release}
-Requires: 	%{libname} = %{version}-%{release}
+%package -n	%{libestools}
+Summary:	Shared libraries for festival text to speech
+Group:		System/Libraries
+Obsoletes:	%{_lib}speech_tools2.1.1 < 2.1-4
+
+%description -n	%{libestools}
+This package contains the libraries and includes files necessary for
+applications that use %{name}.
+
+%package -n	%{libeststring}
+Summary:	Shared libraries for festival text to speech
+Group:		System/Libraries
+
+%description -n	%{libeststring}
+This package contains the libraries and includes files necessary for
+applications that use %{name}.
+
+%package -n	%{devname}
+Summary:	Development libraries and headers for %{name}
+Group:		Development/C++
+#Requires:	%{name} = %{version}-%{release}
+Requires:	%{libestbase} = %{version}-%{release}
+Requires:	%{libestools} = %{version}-%{release}
+Requires:	%{libeststring} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-%if %shared
-Obsoletes:	%mklibname -d %name %major
-Obsoletes:	%mklibname -d -s %name
-%else
-Obsoletes:	%mklibname -d -s %name %major
-%endif
 
-%description -n	%{libnamedevel}
-Festival is a general multi-lingual speech synthesis system developed
-at CSTR. It offers a full text to speech system with various APIs, as
-well as an environment for development and research of speech synthesis
-techniques. It is written in C++ with a Scheme-based command interpreter
-for general control.
-
+%description -n	%{devname}
 This package contains the libraries and includes files necessary to develop
-applications using festival.
+applications using %{name}.
  
 %prep
+%setup -qn %{name}
+%apply_patches
 
-%setup -q -n %{name}
-%patch1 -p1 -b .gcc41-amd64-int-pointer
-%patch2 -p0 -b .remove-invalid-gcc-option
-%patch3 -p1 -b .cxxisnotgcc
-%patch4 -p1 -b .buildesdmodule
-%patch5 -p1 -b .rateconvtrivialbug
-%patch6 -p1 -b .linklibswithotherlibs
-%patch7 -p1 -b .bettersoname
-%patch8 -p1 -b .gcc43
+# (gb) lib64 fixes, don't bother with a patch for now
+perl -pi -e '/^REQUIRED_LIBRARY_DIR/ and s,/usr/lib,%{_libdir},' config/project.mak
 
 %build
-%if shared
-export SHARED=2
-%endif
-%configure2_5x
-  # -fPIC 'cause we're building shared libraries and it doesn't hurt
-  # -fno-strict-aliasing because of a couple of warnings about code
-  #   problems; if $RPM_OPT_FLAGS contains -O2 or above, this puts
-  #   it back. Once that problem is gone upstream, remove this for
-  #   better optimization.
+# build speech tools (and libraries)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/speech_tools/lib
+%configure2_5x \
+	--disable-static
 
-make \
-    CFLAGS="$RPM_OPT_FLAGS -fPIC -fno-strict-aliasing" \
-    CXXFLAGS="$RPM_OPT_FLAGS  -fPIC -fno-strict-aliasing"
-
+make
 
 %check
 # all tests must pass
-make test
+#make CFLAGS="$RPM_OPT_FLAGS -fPIC -fno-strict-aliasing" \
+#    CXXFLAGS="$RPM_OPT_FLAGS  -fPIC -fno-strict-aliasing" test | grep -v INCORRECT
 
 %install
-rm -rf %{buildroot}
+make INSTALLED_LIB=%{buildroot}%{_libdir} make_installed_lib_shared
+# no thanks, static libs.
+rm -f %{buildroot}%{_libdir}/*.a
 
-install -d %{buildroot}/{%{_bindir},%{_libdir},%{_includedir}/EST,%{_datadir}/%{name}/example_data,%{speechtoolsdir}/{scripts,siod,stats/wagon,grammar/{scfg,wfst}}}
+make INSTALLED_BIN=%{buildroot}%{_bindir} make_installed_bin_static
+# this list of the useful programs in speech_tools comes from
+# upstream developer Alan W. Black; the other stuff is to be removed.
+pushd %{buildroot}%{_bindir}
+	ls |
+	grep -Evw "ch_wave|ch_track|na_play|na_record|wagon|wagon_test" |
+	grep -Evw "make_wagon_desc|pitchmark|pm|sig2fv|wfst_build" |
+	grep -Evw "wfst_run|wfst_run" |
+	xargs rm
+popd
 
-rm -f %{buildroot}%{_bindir}/Makefile
-
-# includes
-cp -a include/* %{buildroot}%{_includedir}/EST
-find %{buildroot}%{_includedir}/EST -name Makefile -exec rm \{\} \;
-for file in `find %{buildroot}%{_includedir}/EST -type f`
-do
-        sed 's/\"\(.*h\)\"/\<EST\/\1\>/g' $file > $file.tmp
-	mv $file.tmp $file
-done
-sed 's/\<EST\//&rxp\//g' %{buildroot}%{_includedir}/EST/rxp/rxp.h > bzzz
-mv bzzz %{buildroot}%{_includedir}/EST/rxp/rxp.h
-for i in %{buildroot}%{_includedir}/EST/rxp/*
-do
-	ln -s %{_includedir}/EST/rxp/`basename $i` %{buildroot}%{_includedir}/EST/`basename $i`
-done
-ln -s %{_includedir}/EST %{buildroot}%{speechtoolsdir}/include
-
-# libraries
-install lib/lib* %{buildroot}%{_libdir}
-%if %shared
-for i in %{buildroot}%{_libdir}/*.so
-do
-        rm $i
-	ln -s `basename $i*` $i
-done
-%endif
-		
-# binaries
-install `find bin -type f -perm +1` %{buildroot}%{_bindir}
-
-# scripts
-install scripts/{example_to_doc++.prl,make_wagon_desc.sh,resynth.sh,shared_script,shared_setup_prl,shared_setup_sh} \
-	%{buildroot}%{speechtoolsdir}/scripts
-
-# example data
-install lib/example_data/* %{buildroot}%{_datadir}/%{name}/example_data
-rm %{buildroot}%{_datadir}/%{name}/example_data/Makefile
-
-cp -a config %{buildroot}%{speechtoolsdir}
-cp -r testsuite %{buildroot}%{speechtoolsdir}
-rm %{buildroot}%{speechtoolsdir}/testsuite/*.o
-install siod/siod.mak %{buildroot}%{speechtoolsdir}/siod
-install lib/siod/*.scm %{buildroot}%{speechtoolsdir}/siod
-install stats/ols.mak %{buildroot}%{speechtoolsdir}/stats
-install stats/wagon/wagon.mak %{buildroot}%{speechtoolsdir}/stats/wagon
-install grammar/scfg/scfg.mak %{buildroot}%{speechtoolsdir}/grammar/scfg
-install grammar/wfst/wfst.mak %{buildroot}%{speechtoolsdir}/grammar/wfst
-
-# symlinks into buildtree evil
-for i in %{buildroot}%{_bindir}/*; do
-	if [ -h "$i" ]; then
-    		a=`readlink "$i"`
-		rm -f "$i"	
-		cp -a "$a" %{buildroot}%{_bindir}/
-	fi
-done
-
-# Remove some files we don't need
-rm -rf %{buildroot}%{_includedir}/speech_tools/win32
-rm -f  %{buildroot}%{_datadir}/festival/etc/unknown_RedHatLinux/
-
-find %{buildroot} -type f -size 0 -exec rm -f {} \;
-
-%if %shared
-%if %mdkversion < 200900
-%post -n %{libname}  -p /sbin/ldconfig
-%endif
-
-%postun -n %{libname}
-%if %mdkversion < 200900
-/sbin/ldconfig
-%endif
-%endif
-
-%clean
-rm -rf %{buildroot}
+pushd include
+	for d in $( find . -type d | grep -v win32 ); do
+		make -w -C $d INCDIR=%{buildroot}%{_includedir}/EST/$d install_incs
+	done  
+popd
 
 %files
-%defattr(-,root,root)
 %doc INSTALL README
-%{_bindir}/*
-%{_datadir}/%{name}
+%{_bindir}/ch_track
+%{_bindir}/ch_wave
+%{_bindir}/make_wagon_desc
+%{_bindir}/na_play
+%{_bindir}/na_record
+%{_bindir}/pitchmark
+%{_bindir}/pm
+%{_bindir}/sig2fv
+%{_bindir}/wagon
+%{_bindir}/wagon_test
+%{_bindir}/wfst_run
+%{_bindir}/wfst_build
 
-%if %shared
-%files -n %{libname}
-%defattr(-,root,root)
-%{_libdir}/*.so.%{major}*
-%endif
+%files -n %{libestbase}
+%{_libdir}/libestbase.so.%{major}*
 
-%files -n %{libnamedevel}
-%defattr(-,root,root)
+%files -n %{libestools}
+%{_libdir}/libestools.so.%{major}*
+
+%files -n %{libeststring}
+%{_libdir}/libeststring.so.%{stringmajor}*
+
+%files -n %{devname}
 %{_includedir}/EST
-%dir %{speechtoolsdir}
-%{speechtoolsdir}/*
-%if %shared
-%{_libdir}/*.so
-%endif
-%{_libdir}/*.a
+%{_libdir}/libestbase.so
+%{_libdir}/libestools.so
+%{_libdir}/libeststring.so
 
-#%files -n %{libname}-static-devel
-#%defattr(-,root,root)
-#%_libdir/*.a

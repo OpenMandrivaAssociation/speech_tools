@@ -6,8 +6,8 @@
  
 -PROJECT_LIBRARY_USES_estbase = eststring
 -
-+PROJECT_LIBRARY_USES_estbase = eststring m esd
-+PROJECT_LIBRARY_USES_estools = estbase m ncurses esd
++PROJECT_LIBRARY_USES_estbase = eststring m
++PROJECT_LIBRARY_USES_estools = estbase m ncurses
 +PROJECT_LIBRARY_USES_eststring = m
  PROJECT_LIBRARY_USES_estjava = estbase eststring
  
