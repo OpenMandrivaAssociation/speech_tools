@@ -1,3 +1,5 @@
+%define	debug_package %{nil}
+
 %define major 2.1.1
 %define libestbase %mklibname estbase %{major}
 %define libestools %mklibname estools %{major}
@@ -16,8 +18,6 @@ License:	BSD
 Group:		Sound
 Url:		http://www.cstr.ed.ac.uk/projects/festival/
 Source0:	http://festvox.org/packed/festival/%{version}/%{name}-%{version}-release.tar.gz
-#Source3:	siteinit.scm
-#Source4:	sitevars.scm
 Patch3: festival.gcc47.patch
 # (fc) 1.2.96-4mdv Fix a coding error (RH bug #162137) (Fedora)
 Patch5: festival-1.96-speechtools-rateconvtrivialbug.patch
