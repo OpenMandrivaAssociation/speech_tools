@@ -86,6 +86,7 @@ applications using %{name}.
 perl -pi -e '/^REQUIRED_LIBRARY_DIR/ and s,/usr/lib,%{_libdir},' config/project.mak
 
 %build
+%global optflags %{optflags} -Ofast
 # build speech tools (and libraries)
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/speech_tools/lib
 %configure2_5x \
