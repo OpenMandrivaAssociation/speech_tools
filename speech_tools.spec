@@ -42,7 +42,7 @@ this.
 %package -n	%{libestbase}
 Summary:	Shared libraries for festival text to speech
 Group:		System/Libraries
-Obsoletes:	%{_lib}speech_tools2.1.1 < 2.1-4
+%rename		%{_lib}speech_tools2.1.1
 
 %description -n	%{libestbase}
 This package contains the libraries and includes files necessary for
@@ -51,7 +51,6 @@ applications that use %{name}.
 %package -n	%{libestools}
 Summary:	Shared libraries for festival text to speech
 Group:		System/Libraries
-Obsoletes:	%{_lib}speech_tools2.1.1 < 2.1-4
 
 %description -n	%{libestools}
 This package contains the libraries and includes files necessary for
