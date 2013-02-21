@@ -121,7 +121,7 @@ pushd include
 popd
 
 %files
-%doc INSTALL README
+%doc README
 %{_bindir}/ch_track
 %{_bindir}/ch_wave
 %{_bindir}/make_wagon_desc
