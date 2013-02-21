@@ -11,7 +11,7 @@
 Summary:	A free speech synthesizer 
 Name:		speech_tools
 Version:	2.1
-Release:	5
+Release:	6
 License:	BSD
 Group:		Sound
 Url:		http://www.cstr.ed.ac.uk/projects/festival/
@@ -115,8 +115,8 @@ pushd %{buildroot}%{_bindir}
 popd
 
 pushd include
-	for d in $( find . -type d | grep -v win32 ); do
-		make -w -C $d INCDIR=%{buildroot}%{_includedir}/EST/$d install_incs
+	for header in $(find . -type f -name \*.h | grep -v win32 ); do
+		install -m644 "$header" -D "%{buildroot}%{_includedir}/EST/$header"
 	done  
 popd
 
