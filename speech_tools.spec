@@ -1,5 +1,3 @@
-%define	debug_package %{nil}
-
 %define major 2.1.1
 %define libestbase %mklibname estbase %{major}
 %define libestools %mklibname estools %{major}
@@ -93,7 +91,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/speech_tools/lib
 %configure2_5x \
 	--disable-static
 
-make
+make CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" SHARED_LINKFLAGS="%{ldflags}"
 
 %check
 # all tests must pass
