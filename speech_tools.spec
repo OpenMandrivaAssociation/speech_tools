@@ -91,7 +91,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/speech_tools/lib
 %configure2_5x \
 	--disable-static
 
-make LDFLAGS="%{ldflags} CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" SHARED_LINKFLAGS="%{ldflags}"
+make LDFLAGS="%{ldflags}" CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" SHARED_LINKFLAGS="%{ldflags}"
 
 %check
 # all tests must pass
