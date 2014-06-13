@@ -11,7 +11,7 @@
 Summary:	A free speech synthesizer 
 Name:		speech_tools
 Version:	2.1
-Release:	10
+Release:	11
 License:	BSD
 Group:		Sound
 Url:		http://www.cstr.ed.ac.uk/projects/festival/
