@@ -8,6 +8,8 @@
 %define oldlibname %mklibname speech_tools 1
 %define devname %mklibname speech_tools -d
 
+%define debug_package %{nil}
+
 Summary:	A free speech synthesizer 
 Name:		speech_tools
 Version:	2.1
