@@ -1,4 +1,4 @@
-%define major 2.1.1
+%define major 2.5.0.1
 %define libestbase %mklibname estbase %{major}
 %define libestools %mklibname estools %{major}
 
@@ -12,15 +12,12 @@
 
 Summary:	A free speech synthesizer 
 Name:		speech_tools
-Version:	2.1
-Release:	15
+Version:	2.5.0
+Release:	1
 License:	BSD
 Group:		Sound
 Url:		http://www.cstr.ed.ac.uk/projects/festival/
-Source0:	http://festvox.org/packed/festival/%{version}/%{name}-%{version}-release.tar.gz
-Patch3: festival.gcc47.patch
-# (fc) 1.2.96-4mdv Fix a coding error (RH bug #162137) (Fedora)
-Patch5: festival-1.96-speechtools-rateconvtrivialbug.patch
+Source0:	http://festvox.org/packed/festival/%(echo %{version} |cut -d. -f1-2)/%{name}-%{version}-release.tar.gz
 # (fc) 1.2.96-4mdv Link libs with libm, libtermcap, and libesd (RH bug #198190) (Fedora)
 # (ahmad) 2.1-2.mga1 modify this patch so that we don't link against libesd,
 # as esound is being phased out of the distro
@@ -31,7 +28,6 @@ Patch8:		festival-1.96-speechtools-shared-build.patch
 Patch11:	festival-1.96-main-shared-build.patch
 # (fc) 1.2.96-5mdv improve soname (Fedora)
 Patch12:	festival-2.1-bettersonamehack.patch
-Patch17:	speech_tools-1.2.96-fix-str-fmt.patch
 
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
@@ -123,7 +119,6 @@ pushd include
 popd
 
 %files
-%doc README
 %{_bindir}/ch_track
 %{_bindir}/ch_wave
 %{_bindir}/make_wagon_desc

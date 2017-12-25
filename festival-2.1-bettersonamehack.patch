@@ -1,18 +1,16 @@
-diff -p -up speech_tools/config/compilers/gcc_defaults.mak.bettersoname festival/speech_tools/config/compilers/gcc_defaults.mak
---- speech_tools/config/compilers/gcc_defaults.mak.bettersoname	2010-12-06 10:25:35.000000000 +0100
-+++ speech_tools/config/compilers/gcc_defaults.mak	2010-12-06 10:27:51.000000000 +0100
-@@ -78,7 +78,7 @@ SHARED_CXXFLAGS  = -fPIC
- SHARED_LINKFLAGS = 
- 
+--- speech_tools/config/compilers/gcc_defaults.mak.0012~	2017-12-25 21:35:12.303933557 +0100
++++ speech_tools/config/compilers/gcc_defaults.mak	2017-12-25 21:36:26.294580047 +0100
+@@ -83,7 +83,7 @@ SHARED_LINKFLAGS =
  ifndef GCC_MAKE_SHARED_LIB
--    MAKE_SHARED_LIB = $(CXX) -shared -fno-shared-data -o XXX
+ # Older versions of gcc might have required -fno-shared-data
+ #    MAKE_SHARED_LIB = $(CXX) -shared -fno-shared-data -o XXX
+-    MAKE_SHARED_LIB = $(CXX) -shared -o XXX
 +    MAKE_SHARED_LIB = $(CXX) -shared -o XXX -Wl,-soname,YYY
  else
      MAKE_SHARED_LIB = $(GCC_MAKE_SHARED_LIB)
  endif
-diff -p -up speech_tools/config/rules/library.mak.bettersoname festival/speech_tools/config/rules/library.mak
---- speech_tools/config/rules/library.mak.bettersoname	2001-04-04 13:55:32.000000000 +0200
-+++ speech_tools/config/rules/library.mak	2010-12-06 10:25:35.000000000 +0100
+--- speech_tools/config/rules/library.mak.0012~	2017-09-04 17:54:03.000000000 +0200
++++ speech_tools/config/rules/library.mak	2017-12-25 21:35:12.303933557 +0100
 @@ -103,14 +103,14 @@ endif
   ###########################################################################
  
