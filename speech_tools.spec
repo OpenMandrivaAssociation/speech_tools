@@ -31,6 +31,7 @@ Patch12:	festival-2.1-bettersonamehack.patch
 
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
+BuildRequires:	gomp-devel
 
 %description
 Miscellaneous utilities from the Edinburgh Speech Tools. Unless you have a
