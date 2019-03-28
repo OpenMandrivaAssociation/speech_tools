@@ -8,12 +8,14 @@
 %define oldlibname %mklibname speech_tools 1
 %define devname %mklibname speech_tools -d
 
+%global optflags %{optflags} -fPIC
+
 %define debug_package %{nil}
 
 Summary:	A free speech synthesizer 
 Name:		speech_tools
 Version:	2.5.0
-Release:	2
+Release:	3
 License:	BSD
 Group:		Sound
 Url:		http://www.cstr.ed.ac.uk/projects/festival/
@@ -87,8 +89,7 @@ perl -pi -e '/^REQUIRED_LIBRARY_DIR/ and s,/usr/lib,%{_libdir},' config/project.
 %global optflags %{optflags} -Ofast
 # build speech tools (and libraries)
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/speech_tools/lib
-%configure2_5x \
-	--disable-static
+%configure
 
 make LDFLAGS="%{ldflags}" CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" SHARED_LINKFLAGS="%{ldflags}"
 
@@ -147,4 +148,3 @@ popd
 %{_libdir}/libestbase.so
 %{_libdir}/libestools.so
 %{_libdir}/libeststring.so
-
