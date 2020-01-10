@@ -80,7 +80,7 @@ applications using %{name}.
  
 %prep
 %setup -qn %{name}
-%apply_patches
+%autopatch -p1
 
 # (gb) lib64 fixes, don't bother with a patch for now
 perl -pi -e '/^REQUIRED_LIBRARY_DIR/ and s,/usr/lib,%{_libdir},' config/project.mak
