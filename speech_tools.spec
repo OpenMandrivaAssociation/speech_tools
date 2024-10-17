@@ -18,7 +18,7 @@ Version:	2.5.0
 Release:	3
 License:	BSD
 Group:		Sound
-Url:		http://www.cstr.ed.ac.uk/projects/festival/
+Url:		https://www.cstr.ed.ac.uk/projects/festival/
 Source0:	http://festvox.org/packed/festival/%(echo %{version} |cut -d. -f1-2)/%{name}-%{version}-release.tar.gz
 # (fc) 1.2.96-4mdv Link libs with libm, libtermcap, and libesd (RH bug #198190) (Fedora)
 # (ahmad) 2.1-2.mga1 modify this patch so that we don't link against libesd,
