@@ -31,6 +31,11 @@ Patch11:	festival-1.96-main-shared-build.patch
 # (fc) 1.2.96-5mdv improve soname (Fedora)
 Patch12:	festival-2.1-bettersonamehack.patch
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	perl
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	gomp-devel
